@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="diameter">4500.0</entry>
+<entry key="poleWidth">35.0</entry>
+<entry key="latticeHeight">1600.0</entry>
+<entry key="roofPoleDiameter">40.0</entry>
+<entry key="latticeCount">3</entry>
+<entry key="targetRhombusEdgeDimension">170.0</entry>
+<entry key="doorWidth">{970.0 }</entry>
+</properties>
