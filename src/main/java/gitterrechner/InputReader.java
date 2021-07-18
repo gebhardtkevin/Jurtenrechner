@@ -57,11 +57,17 @@ public class InputReader {
 			try {
 				System.out.print("Breite " + (i) + ".te Tür? ");
 				if (data.getDoorCount()>=i) {
-					System.out.println("( " + data.getDoorWidths().get(i)+ ")");
+					System.out.println("(" + data.getDoorWidths().get(i-1)+ ")");
 				}else {
 					System.out.println();
 				}
-				widths.add(Double.parseDouble(br.readLine()));
+				
+				String input = br.readLine();
+					if (input.isBlank()){
+						widths.add(data.getDoorWidths().get(i-1));
+					}else {
+						widths.add(Double.parseDouble(input));
+					}
 			}catch (NumberFormatException | IOException e) {
 			System.out.println("Nöö. Ich hätte gern eine Double");
 			sucess = false;

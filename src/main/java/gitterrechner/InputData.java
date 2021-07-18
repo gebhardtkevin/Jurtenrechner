@@ -10,18 +10,25 @@ import java.util.Properties;
 
 public class InputData {
 
-	private Double poleWidth = 35.0;
-	private Double roofPoleDiameter = 40.0;
-	private Double targetRhombusEdgeDimension = 200.0; 
-	private Integer latticeCount = 5;
-	private Double latticeHeight = 1800.0;
-	private double diameter = 5000;
+	private static final Double initialPoleWidth = 35.0;
+	private static final Double initialRoofPoleDiameter = 40.0;
+	private static final Double initialTargetRhombusEdgeDimension = 200.0; 
+	private static final Integer initialLatticeCount = 5;
+	private static final Double initialLatticeHeight = 1800.0;
+	private static final double initialDiameter = 5000.0;
+	private static final double initialDoorWidth = 1000.0;
+	
+	private Double poleWidth;
+	private Double roofPoleDiameter;
+	private Double targetRhombusEdgeDimension; 
+	private Integer latticeCount;
+	private Double latticeHeight;
+	private double diameter;
 	private ArrayList<Double> doorWidths;
 	
 	
 	public InputData() {
 		this.doorWidths = new ArrayList<Double>();
-		doorWidths.add(1000d);
 		//resetStandardData();
 		load();
 	}
@@ -115,6 +122,21 @@ public class InputData {
 			for (String dws : doorWidthStrings) {
 				doorWidths.add(Double.valueOf(dws));
 			}
+			
+			if (doorWidths.isEmpty()) {
+				doorWidths.add(initialDoorWidth);
+			}
+	}
+	
+	public void reset(){
+			poleWidth = initialPoleWidth;
+			diameter = initialDiameter;
+			latticeHeight = initialLatticeHeight;
+			latticeCount = initialLatticeCount;
+			targetRhombusEdgeDimension = initialTargetRhombusEdgeDimension;
+			roofPoleDiameter = initialRoofPoleDiameter;
+			doorWidths.clear();
+			doorWidths.add(initialDoorWidth);
 }
     
     public void save(){
