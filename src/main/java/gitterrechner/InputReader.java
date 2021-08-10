@@ -27,6 +27,10 @@ public class InputReader {
 		System.out.println("Anzahl Gitter? (" + data.getLatticeCount() + ")");
 		while(!readLatticeCount());
 		while(!readDoorCount());
+		System.out.println("Durchmesser der Krone? (" + data.getCrownDiameter() + ")");
+		while (!readCrownDiameter());
+		System.out.println("Dachwinkel? (" + data.getRoofAngle() + ")");
+		while (!readRoofAngle());
 		this.data.save();
 		return this.data;
 	}
@@ -84,6 +88,34 @@ public class InputReader {
 			String input = br.readLine();
 			if (!input.isBlank()){
 				data.setDiameter(Double.parseDouble(input));
+			}
+			return true;
+		} catch (NumberFormatException | IOException e) {
+			System.out.println("Nöö. Ich hätte gern eine Double");
+			return false;
+		}
+	}
+	
+	private boolean readCrownDiameter() {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			String input = br.readLine();
+			if (!input.isBlank()){
+				data.setCrownDiameter(Double.parseDouble(input));
+			}
+			return true;
+		} catch (NumberFormatException | IOException e) {
+			System.out.println("Nöö. Ich hätte gern eine Double");
+			return false;
+		}
+	}
+	
+	private boolean readRoofAngle() {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			String input = br.readLine();
+			if (!input.isBlank()){
+				data.setRoofAngle(Double.parseDouble(input));
 			}
 			return true;
 		} catch (NumberFormatException | IOException e) {

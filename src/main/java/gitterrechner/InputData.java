@@ -10,13 +10,16 @@ import java.util.Properties;
 
 public class InputData {
 
-	private static final Double initialPoleWidth = 35.0;
-	private static final Double initialRoofPoleDiameter = 40.0;
-	private static final Double initialTargetRhombusEdgeDimension = 200.0; 
+	private static final Double  initialPoleWidth = 35.0;
+	private static final Double  initialRoofPoleDiameter = 40.0;
+	private static final Double  initialTargetRhombusEdgeDimension = 200.0; 
 	private static final Integer initialLatticeCount = 5;
-	private static final Double initialLatticeHeight = 1800.0;
-	private static final double initialDiameter = 5000.0;
-	private static final double initialDoorWidth = 1000.0;
+	private static final Double  initialLatticeHeight = 1800.0;
+	private static final double  initialDiameter = 5000.0;
+	private static final double  initialDoorWidth = 1000.0;
+	private static final double  initialCrownDiameter = 1370.0;
+	private static final double  initialRoofAngle = 22.0;
+	private static final double  crownWidth = 70.0;
 	
 	private Double poleWidth;
 	private Double roofPoleDiameter;
@@ -24,7 +27,10 @@ public class InputData {
 	private Integer latticeCount;
 	private Double latticeHeight;
 	private double diameter;
+	private double crownDiameter;
+	private double roofAngle;
 	private ArrayList<Double> doorWidths;
+
 	
 	
 	public InputData() {
@@ -44,7 +50,15 @@ public class InputData {
 	public double getRoofPoleDiameter() {
 		return roofPoleDiameter;
 	}
+	
+	public double getRoofAngle() {
+		return roofAngle;
+	}
 
+	public double getCrownDiameter() {
+		return crownDiameter;
+	}
+	
 	public double getTargetRhombusEdgeDimension() {
 		return targetRhombusEdgeDimension;
 	}
@@ -84,6 +98,14 @@ public class InputData {
 	public void setDiameter(Double diameter) {
 		this.diameter = diameter;
 	}
+	
+	public void setCrownDiameter(Double diameter) {
+		this.crownDiameter = diameter;
+	}
+	
+	public void setRoofAngle(Double angle) {
+		this.roofAngle = angle;
+	}
 
 	public void addDoor(double doorWidth) {
 		this.doorWidths.add(doorWidth);		
@@ -95,7 +117,6 @@ public class InputData {
 
 	public void setDoors(ArrayList<Double> widths) {
 		this.doorWidths = widths;
-		
 	}
 
 	public void load(){
@@ -109,6 +130,8 @@ public class InputData {
 		}
 			poleWidth = Double.valueOf(loadProps.getProperty("poleWidth"));
 			diameter = Double.valueOf(loadProps.getProperty("diameter"));
+			crownDiameter = Double.valueOf(loadProps.getProperty("crownDiameter"));
+			roofAngle = Double.valueOf(loadProps.getProperty("roofAngle"));
 			latticeHeight = Double.valueOf(loadProps.getProperty("latticeHeight"));
 			latticeCount = Integer.valueOf(loadProps.getProperty("latticeCount"));
 			targetRhombusEdgeDimension = Double.valueOf(loadProps.getProperty("targetRhombusEdgeDimension"));
@@ -135,6 +158,8 @@ public class InputData {
 			latticeCount = initialLatticeCount;
 			targetRhombusEdgeDimension = initialTargetRhombusEdgeDimension;
 			roofPoleDiameter = initialRoofPoleDiameter;
+			roofAngle= initialRoofAngle;
+			crownDiameter= initialCrownDiameter;
 			doorWidths.clear();
 			doorWidths.add(initialDoorWidth);
 }
@@ -149,6 +174,8 @@ public class InputData {
         saveProps.setProperty("targetRhombusEdgeDimension", String.valueOf(targetRhombusEdgeDimension));
         saveProps.setProperty("roofPoleDiameter", String.valueOf(roofPoleDiameter));
         saveProps.setProperty("poleWidth", String.valueOf(poleWidth));
+        saveProps.setProperty("roofAngle", String.valueOf(roofAngle));
+        saveProps.setProperty("crownDiameter", String.valueOf(crownDiameter));
         
         String  doorWidthString = "{";
         for (double width : doorWidths) {
@@ -166,4 +193,8 @@ public class InputData {
 		}
 	
     }
+
+	public double getInnerCrownDiameter() {
+		return crownDiameter+2*crownWidth;
+	}
 }

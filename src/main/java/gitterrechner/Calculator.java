@@ -1,47 +1,81 @@
 package gitterrechner;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import graphics.Printer;
+
 public class Calculator {
-	
-	
+	private DrawResults results;
+	private InputData data;
+
 
 	public Calculator(InputData data, DrawResults results) {
 
-		int doorSites = data.getDoorCount()*2;
-		int latticeConnectionPoints =data.getLatticeCount()-data.getDoorCount();
-		
-		double circumference = data.getDiameter()*Math.PI;
-		double targetTotalLatticeLength = circumference;
-		
+		this.data = data;
+		this.results= results;
+		Printer printer = new Printer(this);
+		printer.print();
+	}
+
+
+
+	private boolean isEven(int x) {
+		return (((x & 1) == 0 )?true:false);
+	}
+
+	public int getRoofPoleCount(){
+		int roofPoleCount = getKnots();
 		for (double doorWidth : data.getDoorWidths()) {
-			double alpha = Math.asin(doorWidth/data.getDiameter());
-			double doorOnCircleLength = circumference*alpha/(Math.PI);
-			targetTotalLatticeLength=targetTotalLatticeLength-doorOnCircleLength;
+			double totalWidth = doorWidth+2*results.getDistanceToDoor();
+			
+			int polesOverDoor1 = (int) Math.floor(totalWidth/getKnotDistance())-1;
+			int polesOverDoor2 = (int) Math.ceil(totalWidth/getKnotDistance())-1;
+			
+			double distanceBeetweenDoorPoles1 = totalWidth/(polesOverDoor1+1);
+			double distanceBeetweenDoorPoles2 = totalWidth/(polesOverDoor2+1);
+			
+			int polesOverDoor = 0;
+			if (distanceBeetweenDoorPoles1<distanceBeetweenDoorPoles2){
+				polesOverDoor = polesOverDoor1;
+			}else {
+				polesOverDoor = polesOverDoor2;
+			}
+			
+			roofPoleCount += polesOverDoor;
 		}
+		return roofPoleCount;
+	}
 		
-		double latticeEdgeSum = doorSites*results.getDistanceToDoor()+
-						        latticeConnectionPoints*results.getDistanceBeetweenLattices();
-		double latticeSum = latticeEdgeSum;
-		int knots = 0;
-		while  (latticeSum<targetTotalLatticeLength) {
-			knots++;
-			latticeSum+=results.getDistanceBeetweenPoles();
-		}
-		double lastLatticeSum = latticeSum-results.getDistanceBeetweenPoles();
+	
+
+
+	public double getLengthError() {
+		return results.getEdgeDistance()-data.getTargetRhombusEdgeDimension();
+	}
+
+	public int getStandardKnots() {
+		int edgeKnots = (results.getKnotsOnPole()-1)/2;
+		return getKnots()-edgeKnots;
+	}
+
+	public int getLatticeConnectionPoints() {
+		return data.getLatticeCount()-data.getDoorCount();
+	}
+
+	public int getDoorSites() {
+		return data.getDoorCount()*2;
 		
-		double diff = latticeSum-targetTotalLatticeLength;
-		double lastDiff = lastLatticeSum-targetTotalLatticeLength;
-		if (Math.abs(diff)>Math.abs(lastDiff)) {
-			knots--;
-			diff = lastDiff;
-		}
-		
-		int edgeKnots = (int) Math.round((results.getKnotsOnPole()-1)/2);
-		int standardKnots = knots-edgeKnots;
+	}
+	
+	public double getKnotDistance() {
+		return results.getDistanceBeetweenPoles();
+	}
+
+	public ArrayList<Integer> getPoleDistribution() {
 		
 		int remainingLattices=data.getLatticeCount();
-		int remainingPoles = 2*standardKnots;
+		int remainingPoles = 2*getStandardKnots();
 		
 		ArrayList<Integer> poleDistribution = new ArrayList<Integer>();
 		while (remainingLattices>0) {
@@ -53,53 +87,61 @@ public class Calculator {
 			remainingPoles = remainingPoles-polesOnLattice;
 			remainingLattices--;			
 		}
-	
-		getPieceList(results, standardKnots, poleDistribution, doorSites, latticeConnectionPoints, diff);
+		return poleDistribution;
+	}
+
+	public int getEvenPoleLength(int i) {
+		return (int) Math.round(2*results.getEdgeDistance()+results.getInnerDistance()*i);
+	}
+
+	public int getUnEvenPoleLength(int i) {
+		return (int) Math.round(2*results.getEdgeDistance()+results.getInnerDistance()*(i+1));
 	}
 	
-	private boolean isEven(int x) {
+	public double getPoleLength() {
+		double length = (data.getDiameter()-data.getCrownDiameter())/2;
+		double sin = Math.cos(Math.toRadians(data.getRoofAngle()));
+		Settings settings = new Settings(true);
+		return length/sin+settings.getLowerPoleAddition()+settings.getUpperPoleAddition();
 		
-		return (((x & 1) == 0 )?true:false);
 	}
+
+	private int getKnots() {
+		double circumference = data.getDiameter()*Math.PI;
+		double targetTotalLatticeLength = circumference;
 	
-	public void getPieceList(DrawResults results, int standardKnots, ArrayList<Integer> poledistribution,int doorSites, int latticeConnectionPoints, double lengthError) {
-
-		//ungerade Ecken: Längste Stange ist eine zusätzliche mit knotsOnPole-1, da die 1x-Stangen wegfallen und eine Vollstange entsprechend gekürzt wird
-
-		//Todo: (wird noch nicht geprüft)
-		//die Minimallänge des Gitters ohne Vollstangen ist : ((knotsOnPole-1)/2)-1 + die entsprechenden Enden
-		//bei kürzerem Gitter: Bei n fehlenden Knoten knotsOnPole-1-n ist die maximale Stangenlänge. diese ist doppelt vorhanden 
-		
-		int evenEdges = doorSites + latticeConnectionPoints;
-		int unevenEdges = latticeConnectionPoints;
-		System.out.println("=============================================================");
-		System.out.println("=============================================================");
-		System.out.println("=                                                           =");
-		System.out.println("=                     LATTICE PART LIST                     =");
-		System.out.println("=                                                           =");
-		System.out.println("=============================================================");
-		System.out.println("=============================================================");
-		System.out.println();
-		System.out.println();
-		System.out.println("=============================================================");
-		int i;
-		for (i = 1; i<((int) Math.round(results.getKnotsOnPole())-2); i=i+2) {
-			System.out.println("  " + 2*evenEdges   + " x " + Math.round(2*results.getEdgeDistance()+results.getInnerDistance()*i) + " mm");
-			System.out.println("  " + 2*unevenEdges + " x " + Math.round(2*results.getEdgeDistance()+results.getInnerDistance()*(i+1)) + " mm");
+		for (double doorWidth : data.getDoorWidths()) {
+			double alpha = Math.asin(doorWidth/data.getDiameter());
+			double doorOnCircleLength = circumference*alpha/(Math.PI);
+			targetTotalLatticeLength=targetTotalLatticeLength-doorOnCircleLength;
 		}
-		System.out.println("  " + 2*(evenEdges+unevenEdges)   + " x " + Math.round(2*results.getEdgeDistance()+results.getInnerDistance()*i) + " mm");
-		System.out.print("= " + 2*standardKnots + " x " + Math.round(2*results.getEdgeDistance()+results.getInnerDistance()*(i+1)) + " mm");
-		System.out.print(" [ ");
-		for (int poles: poledistribution) {
-			System.out.print(poles + " ");
+	
+		double latticeEdgeSum = getDoorSites()*results.getDistanceToDoor()+
+		getLatticeConnectionPoints()*results.getDistanceBeetweenLattices();
+		double latticeSum = latticeEdgeSum;
+		int knots = 0;
+		while  (latticeSum<targetTotalLatticeLength) {
+			knots++;
+			latticeSum+=results.getDistanceBeetweenPoles();
 		}
-		System.out.println("]");
-		
-		System.out.println("=============================================================");
-		System.out.println("  Edge Distance: " + results.getEdgeDistance());
-		System.out.println("  Inner Distance: " + results.getInnerDistance());
-		System.out.println("  Differenz zur optimalen Länge: " + lengthError + "mm");
+		double lastLatticeSum = latticeSum-results.getDistanceBeetweenPoles();
+	
+		double diff = latticeSum-targetTotalLatticeLength;
+		double lastDiff = lastLatticeSum-targetTotalLatticeLength;
+		if (Math.abs(diff)>Math.abs(lastDiff)) {
+			knots--;
+			diff = lastDiff;
+		}
+		return knots;
 	}
 
 
+
+	public InputData getData() {
+		return this.data;
+	}
+	
+	public DrawResults getResults() {
+		return this.results;
+	}
 }

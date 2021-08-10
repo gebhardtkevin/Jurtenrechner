@@ -5,6 +5,8 @@
 <entry key="poleWidth">35.0</entry>
 <entry key="latticeHeight">1600.0</entry>
 <entry key="roofPoleDiameter">40.0</entry>
+<entry key="roofAngle">22.0</entry>
+<entry key="crownDiameter">1370.0</entry>
 <entry key="latticeCount">3</entry>
 <entry key="targetRhombusEdgeDimension">170.0</entry>
 <entry key="doorWidth">{970.0 }</entry>
