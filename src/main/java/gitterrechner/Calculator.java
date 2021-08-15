@@ -1,6 +1,5 @@
 package gitterrechner;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import graphics.Printer;
@@ -17,8 +16,6 @@ public class Calculator {
 		Printer printer = new Printer(this);
 		printer.print();
 	}
-
-
 
 	private boolean isEven(int x) {
 		return (((x & 1) == 0 )?true:false);
@@ -46,9 +43,6 @@ public class Calculator {
 		}
 		return roofPoleCount;
 	}
-		
-	
-
 
 	public double getLengthError() {
 		return results.getEdgeDistance()-data.getTargetRhombusEdgeDimension();
@@ -102,8 +96,7 @@ public class Calculator {
 		double length = (data.getDiameter()-data.getCrownDiameter())/2;
 		double sin = Math.cos(Math.toRadians(data.getRoofAngle()));
 		Settings settings = new Settings(true);
-		return length/sin+settings.getLowerPoleAddition()+settings.getUpperPoleAddition();
-		
+		return length/sin+settings.getLowerPoleAddition()+settings.getUpperPoleAddition();	
 	}
 
 	private int getKnots() {
@@ -134,8 +127,6 @@ public class Calculator {
 		}
 		return knots;
 	}
-
-
 
 	public InputData getData() {
 		return this.data;

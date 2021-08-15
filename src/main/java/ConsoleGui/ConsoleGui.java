@@ -26,6 +26,12 @@ public class ConsoleGui {
 		printBorder(text, orientation,this.fillChar);
 	}
 		
+	public void printChapterTitle(String title) {
+		printDivider();
+		printBorder(title,Alignment.CENTER,true);
+		printDivider();
+	}
+	
 	public void printBorder(String text, Alignment orientation,char fillChar) {
 		String out = new String();
 		out += borderChar;

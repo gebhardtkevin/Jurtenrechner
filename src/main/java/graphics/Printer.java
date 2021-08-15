@@ -6,6 +6,7 @@ import ConsoleGui.ConsoleGui;
 import gitterrechner.Calculator;
 import gitterrechner.DrawResults;
 import gitterrechner.InputData;
+import gitterrechner.Settings;
 
 public class Printer {
 	
@@ -13,7 +14,8 @@ public class Printer {
 	private InputData data;
 	private DrawResults results;
 	private DecimalFormat oneDecimal =  new DecimalFormat( "0.0" );
-	private ConsoleGui gui = new ConsoleGui(90, '*', ' ');
+	private ConsoleGui gui = new ConsoleGui(80, '*', ' ');
+	private Settings settings = new Settings();
 	
 	public Printer(Calculator calculator) {
 		this.calculator=calculator;
@@ -45,9 +47,7 @@ public class Printer {
 		
 		int evenEdges = calculator.getDoorSites() + calculator.getLatticeConnectionPoints();
 		int unevenEdges = calculator.getLatticeConnectionPoints();
-		gui.printDivider();
-		gui.printBorder("Lattice Data",Alignment.CENTER,true);
-		gui.printDivider();
+		gui.printChapterTitle("Lattice Data");
 		int i;
 		for (i = 1; i<(results.getKnotsOnPole()-2); i=i+2) {
 			gui.printBorder("  " + 2*evenEdges   + " x " + format(calculator.getEvenPoleLength(i)) + " mm", Alignment.LEFT);
@@ -70,19 +70,19 @@ public class Printer {
 	}
 
 	private void printRoofInfo() {
-		gui.printDivider();
-		gui.printBorder("Roof Data",Alignment.CENTER,true);
-		gui.printDivider();
+		gui.printChapterTitle("Roof Data");
 		gui.printBorder("  Anzahl der Dachstangen: " + calculator.getRoofPoleCount(), Alignment.CENTER);
 		gui.printBorder("  Länge der Dachstangen: " + format(calculator.getPoleLength()) + " mm", Alignment.CENTER);
 		gui.endChapter();
 	}
 	
+	
+	
 	private void printDoorInfo() {
 		//TODO noch ungeprüft: Erste Stange auf der Tür kann noch zu weit aussen sitzen
 		
 		int doorNum = 1;
-		gui.printDivider();
+		gui.printChapterTitle("Door Data");
 		for (double doorWidth : data.getDoorWidths()) {
 			double totalWidth = doorWidth+2*results.getDistanceToDoor();
 			int polesOverDoor1 = (int) Math.floor(totalWidth/calculator.getKnotDistance())-1;
@@ -102,7 +102,7 @@ public class Printer {
 			}
 			
 			double doorLengthError = distanceBeetweenDoorPoles-calculator.getKnotDistance(); 
-			
+			gui.printBorder();
 			gui.printBorder("Tür "+ doorNum, Alignment.CENTER, '*');
 			gui.printDivider();
 			gui.printBorder("  Stangen über Tür "+ doorNum + ": " + polesOverDoor, Alignment.CENTER);
@@ -115,11 +115,40 @@ public class Printer {
 	}
 	
 	private void printFabricInfo() {
-		// TODO Auto-generated method stub
-		
+		gui.printChapterTitle("Fabric Data");
+		gui.printBorder("Äusserer Radius Dackkreis: " + format(getRoofFabricOuterRadius())+" mm", Alignment.CENTER);
+		gui.printBorder("Innerer Radius Dackkreis: " + format(getRoofFabricInnerRadius())+" mm", Alignment.CENTER);
+		gui.printBorder("Mindest-Segmentwinkel: " + format(getRoofFabricSegmentAngle())+" mm", Alignment.CENTER);		
+		gui.printDivider();
+		gui.printBorder("Gesamtlänge Wand : "+format(getWallLength()) + " mm", Alignment.CENTER);
+		gui.endChapter();
 	}
-	
-	
+			
+	private double getWallLength() {
+		double length = Math.PI*data.getDiameter();
+		for (double door : data.getDoorWidths()) {
+			length = length-door;
+		}
+		length = length + (2*data.getDoorCount()*settings.getSeamAdditionDoor());
+		return length;
+	}
+
+	private double getRoofFabricSegmentAngle() {
+		return (data.getDiameter()*360)/(2*getRoofFabricOuterRadius());
+	}
+
+	private double getRoofFabricInnerRadius() {
+		double r = data.getCrownDiameter()/2;
+		double h = r*Math.tan(Math.toRadians(data.getRoofAngle()));
+		return Math.sqrt((h*h)+(r*r))+settings.getSeamAdditionCrown();
+	}
+
+	private double getRoofFabricOuterRadius() {
+		double r = data.getDiameter()/2;
+		double h = r*Math.tan(Math.toRadians(data.getRoofAngle()));
+		return Math.sqrt((h*h)+(r*r))+settings.getSeamAdditionRoofOverhang();
+	}
+
 	public void print() {
 		printTitle();
 		printPieceList();

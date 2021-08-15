@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="lowerPoleAddition">100.0</entry>
+<entry key="seamAdditionRoofOverhang">220.0</entry>
+<entry key="upperPoleAddition">50.0</entry>
+<entry key="seamAdditionDoor">50.0</entry>
+<entry key="crownWidth">70.0</entry>
+<entry key="seamAdditionCrown">50.0</entry>
+</properties>
