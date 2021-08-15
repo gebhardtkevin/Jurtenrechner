@@ -49,19 +49,25 @@ public class Printer {
 		int unevenEdges = calculator.getLatticeConnectionPoints();
 		gui.printChapterTitle("Lattice Data");
 		int i;
+		int connectioncounter = 0;
 		for (i = 1; i<(results.getKnotsOnPole()-2); i=i+2) {
 			gui.printBorder("  " + 2*evenEdges   + " x " + format(calculator.getEvenPoleLength(i)) + " mm", Alignment.LEFT);
 			gui.printBorder("  " + 2*unevenEdges + " x " + format(calculator.getUnEvenPoleLength(i)) + " mm", Alignment.LEFT);
+			connectioncounter += evenEdges*(i+1);
+			connectioncounter += unevenEdges*(i+2);
 		}
-		gui.printBorder("  " + 2*(evenEdges+unevenEdges)   + " x " + format(calculator.getEvenPoleLength(i)) + " mm", Alignment.LEFT);
+		gui.printBorder("  " + 2*(evenEdges+unevenEdges)   + " x " + format(calculator.getEvenPoleLength(i)) + " mm", Alignment.LEFT);		
 		gui.printBorder("  " + 2*calculator.getStandardKnots() + " x " + format(calculator.getUnEvenPoleLength(i)) + " mm",Alignment.LEFT);
-		
+		connectioncounter += (evenEdges+unevenEdges)*(i+1);
+		connectioncounter += calculator.getStandardKnots()*(i+2);
 		String out = "  [ ";
 		for (int poles: calculator.getPoleDistribution()) {
 			out += (poles + " ");
 		}
 		out += ("]");
 		gui.printBorder(out,Alignment.LEFT);
+		gui.printDivider();
+		gui.printBorder("  Knotenpunkte: " + (int) connectioncounter,Alignment.CENTER);
 		gui.printDivider();
 		gui.printBorder("  Edge Distance: " + format(results.getEdgeDistance())+ " mm",Alignment.CENTER);
 		gui.printBorder("  Inner Distance: " + format(results.getInnerDistance())+ " mm",Alignment.CENTER);
