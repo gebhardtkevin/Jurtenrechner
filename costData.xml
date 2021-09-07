@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="latticeWoodPerMeter">1.00</entry>
+<entry key="RoofPolePerPole">3.00</entry>
+<entry key="RingWoodPerM3">700.00</entry>
+<entry key="DoorUsed">100.0</entry>
+<entry key="DoorWoodPerM3">2000.00</entry>
+<entry key="SmallParts">1000.00</entry>
+<entry key="InnerFabricPerM2">2.00</entry>
+<entry key="FeltPerM2">10.00</entry>
+<entry key="RainFabricPerM2">14.00</entry>
+<entry key="OuterFabricPerM2">4.00</entry>
+<entry key="UpperFloorPerM2">35.00</entry>
+<entry key="FloorInsulationPerM2">14.00</entry>
+<entry key="StrucuralFloorWoodPerMeter">10.00</entry>
+<entry key="LowerLayerPerM2">10.00</entry>
+</properties>
